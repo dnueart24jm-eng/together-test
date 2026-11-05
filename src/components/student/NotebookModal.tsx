@@ -199,8 +199,31 @@ export const NotebookModal: React.FC<NotebookModalProps> = ({
               <BookMarked className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h3 className="text-base sm:text-lg font-bold">나만의 한국어 노트 (My Korean Notebook)</h3>
-              <p className="text-xs text-amber-100">{studentNickname} · 궁금한 한국어를 검색하고 폴더별로 정리해요</p>
+              <h3 className="text-base sm:text-lg font-bold">
+                {({
+                  ko: '나만의 한국어 노트',
+                  en: 'My Korean Notebook',
+                  vi: 'Sổ tay tiếng Hàn của em',
+                  ru: 'Мой блокнот корейского языка',
+                  'uz-Latn': 'Mening koreys tili daftarim',
+                  'uz-Cyrl': 'Менинг корейс тили дафтарим',
+                  'zh-Hans': '我的韩语笔记本',
+                  'zh-Hant': '我的韓語筆記本',
+                } as Record<LanguageCode, string>)[studentLanguage] || 'My Korean Notebook'}
+              </h3>
+              <p className="text-xs text-amber-100">
+                {studentNickname} ·{' '}
+                {({
+                  ko: '궁금한 한국어를 검색하고 폴더별로 정리해요',
+                  en: 'Search Korean words and organize them into folders',
+                  vi: 'Tìm kiếm từ tiếng Hàn và sắp xếp theo thư mục',
+                  ru: 'Ищи корейские слова и сохраняй их по папкам',
+                  'uz-Latn': 'Koreyscha so‘zlarni qidiring va papkalarga saqlang',
+                  'uz-Cyrl': 'Корейсча сўзларни қидиринг ва папкаларга сақланг',
+                  'zh-Hans': '搜索韩语单词并按文件夹整理',
+                  'zh-Hant': '搜尋韓語單字並按資料夾整理',
+                } as Record<LanguageCode, string>)[studentLanguage] || 'Search Korean words and organize them into folders'}
+              </p>
             </div>
           </div>
           <button
@@ -365,7 +388,18 @@ export const NotebookModal: React.FC<NotebookModalProps> = ({
                   className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-xl border border-amber-200"
                 >
                   <FolderPlus className="w-3.5 h-3.5" />
-                  <span>폴더 추가</span>
+                  <span>
+                    {({
+                      ko: '폴더 추가',
+                      en: 'Add Folder',
+                      vi: 'Thêm thư mục',
+                      ru: 'Добавить папку',
+                      'uz-Latn': 'Papka qo‘shish',
+                      'uz-Cyrl': 'Папка қўшиш',
+                      'zh-Hans': '添加文件夹',
+                      'zh-Hant': '新增資料夾',
+                    } as Record<LanguageCode, string>)[studentLanguage] || 'Add Folder'}
+                  </span>
                 </button>
               )}
             </div>
@@ -396,10 +430,30 @@ export const NotebookModal: React.FC<NotebookModalProps> = ({
           {/* 3. Saved Items List */}
           <div className="max-h-[340px] overflow-y-auto space-y-2.5 pr-1">
             {loading ? (
-              <div className="py-10 text-center text-slate-400 text-xs">노트를 불러오는 중...</div>
+              <div className="py-10 text-center text-slate-400 text-xs">
+                {({
+                  ko: '노트를 불러오는 중...',
+                  en: 'Loading notebook...',
+                  vi: 'Đang tải sổ tay...',
+                  ru: 'Загрузка блокнота...',
+                  'uz-Latn': 'Daftar yuklanmoqda...',
+                  'uz-Cyrl': 'Дафтар юкланмоқда...',
+                  'zh-Hans': '正在加载笔记本...',
+                  'zh-Hant': '正在載入筆記本...',
+                } as Record<LanguageCode, string>)[studentLanguage] || 'Loading notebook...'}
+              </div>
             ) : filteredItems.length === 0 ? (
               <div className="py-10 text-center text-slate-400 border border-dashed border-slate-200 rounded-xl text-xs">
-                저장된 항목이 없습니다. 위 검색창에서 단어를 검색하거나 수업 화면에서 북마크를 눌러보세요!
+                {({
+                  ko: '저장된 항목이 없습니다. 위 검색창에서 단어를 검색하거나 수업 화면에서 북마크를 눌러보세요!',
+                  en: 'No saved items yet. Search a word above or tap the bookmark icon during class!',
+                  vi: 'Chưa có mục nào được lưu. Hãy tìm từ ở trên hoặc nhấn biểu tượng đánh dấu trong giờ học!',
+                  ru: 'Пока нет сохранённых записей. Найди слово выше или нажми на закладку на уроке!',
+                  'uz-Latn': 'Hali saqlangan so‘zlar yo‘q. Yuqoridan qidiring yoki darsda xatcho‘pni bosing!',
+                  'uz-Cyrl': 'Ҳали сақланган сўзлар йўқ. Юқоридан қидиринг ёки дарсда хатчўпни босинг!',
+                  'zh-Hans': '暂无保存的内容。请在上方搜索单词或在课堂页面点击书签图标！',
+                  'zh-Hant': '暫無儲存的內容。請在上方搜尋單字或在課堂頁面點擊書籤圖示！',
+                } as Record<LanguageCode, string>)[studentLanguage] || 'No saved items yet. Search a word above or tap the bookmark icon during class!'}
               </div>
             ) : (
               filteredItems.map((item) => (
