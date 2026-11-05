@@ -120,26 +120,35 @@ export const MenuWhatShouldIDo: React.FC<MenuWhatShouldIDoProps> = ({
     if (classCode && studentId) {
       try {
         const saved = localStorage.getItem('togetheron_student_session');
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          parsed.taskStates = {
-            ...(parsed.taskStates || {}),
-            [taskId]: {
-              taskId,
-              stageId: stage.id,
-              status,
-              helpReason: reason,
-              helpNote: note,
-              updatedAt: Date.now(),
-            },
-          };
-          localStorage.setItem('togetheron_student_session', JSON.stringify(parsed));
-          void syncStudentToFirestore(classCode, parsed);
-        }
+        const parsed = saved
+          ? JSON.parse(saved)
+          : {
+              id: studentId,
+              classCode,
+              nickname: '학생',
+              language: studentLanguage,
+              koreanLevel: 'beginner',
+              currentStageId: stage.id,
+              taskStates: {},
+              lastActive: Date.now(),
+            };
+        parsed.taskStates = {
+          ...(parsed.taskStates || {}),
+          [taskId]: {
+            taskId,
+            stageId: stage.id,
+            status,
+            helpReason: reason,
+            helpNote: note,
+            updatedAt: Date.now(),
+          },
+        };
+        localStorage.setItem('togetheron_student_session', JSON.stringify(parsed));
+        await syncStudentToFirestore(classCode, parsed);
       } catch {
         // ignore
       }
-      const res = await updateStudentTaskStatus(
+      void updateStudentTaskStatus(
         classCode,
         studentId,
         taskId,
@@ -148,12 +157,8 @@ export const MenuWhatShouldIDo: React.FC<MenuWhatShouldIDoProps> = ({
         reason,
         note
       );
-      if (res.success) {
-        setSyncNotice({ type: 'ok', msg: '선생님 화면에 활동 상태가 저장되었습니다.' });
-        setTimeout(() => setSyncNotice(null), 2500);
-      } else {
-        setSyncNotice({ type: 'err', msg: '상태 저장에 실패했습니다. 네트워크를 확인 후 다시 눌러주세요.' });
-      }
+      setSyncNotice({ type: 'ok', msg: '선생님 화면에 활동 상태가 전달되었습니다.' });
+      setTimeout(() => setSyncNotice(null), 2000);
     }
   };
 

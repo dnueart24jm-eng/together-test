@@ -17,6 +17,7 @@ import {
   StudentSession,
   HelpReason,
   TaskStatus,
+  LessonStage,
 } from '../../types/lesson';
 import {
   getClassroomDashboard,
@@ -29,6 +30,7 @@ interface TeacherLiveDashboardProps {
   classCode: string;
   teacherToken?: string;
   currentStageId: string;
+  currentStage?: LessonStage;
   onRefreshStage?: () => void;
 }
 
@@ -36,6 +38,7 @@ export const TeacherLiveDashboard: React.FC<TeacherLiveDashboardProps> = ({
   classCode,
   teacherToken,
   currentStageId,
+  currentStage,
   onRefreshStage,
 }) => {
   const [students, setStudents] = useState<StudentSession[]>([]);
@@ -347,6 +350,36 @@ export const TeacherLiveDashboard: React.FC<TeacherLiveDashboardProps> = ({
                       </span>
                     )}
                   </div>
+
+                  {/* Per-task completion breakdown for current stage */}
+                  {currentStage?.tasks && currentStage.tasks.length > 0 && (
+                    <div className="mt-2.5 pt-2.5 border-t border-slate-100 space-y-1.5">
+                      {currentStage.tasks.map((taskText, tIdx) => {
+                        const tId = `${currentStage.id}-task-${tIdx}`;
+                        const tState = stu.taskStates?.[tId]?.status || 'not_started';
+                        const badgeMap: Record<TaskStatus, { label: string; cls: string }> = {
+                          not_started: { label: '미완료', cls: 'bg-slate-100 text-slate-600' },
+                          in_progress: { label: '진행 중', cls: 'bg-amber-100 text-amber-800' },
+                          done: { label: '완료', cls: 'bg-emerald-100 text-emerald-800' },
+                          help_needed: { label: '도움 필요', cls: 'bg-red-100 text-red-700 font-bold' },
+                        };
+                        const b = badgeMap[tState];
+                        return (
+                          <div
+                            key={tId}
+                            className="flex items-center justify-between gap-2 text-[11px] bg-slate-50 px-2 py-1 rounded-md"
+                          >
+                            <span className="text-slate-700 truncate">
+                              {tIdx + 1}. {taskText}
+                            </span>
+                            <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold shrink-0 ${b.cls}`}>
+                              {b.label}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
               );
             })}

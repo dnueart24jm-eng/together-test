@@ -171,6 +171,7 @@ export const TeacherView: React.FC<TeacherViewProps> = ({
         classCode={classCode}
         teacherToken={teacherToken}
         currentStageId={currentStageId}
+        currentStage={lessonData.stages.find((s) => s.id === currentStageId)}
       />
 
       {/* 1-2. Lesson Library & Archive */}
