@@ -17,6 +17,7 @@ import {
   syncClassroomToFirestore,
   subscribeClassroomFromFirestore,
   syncStudentToFirestore,
+  removeStudentFromFirestore,
 } from './services/firebaseSync';
 import { TopNav } from './components/TopNav';
 import { StudentView } from './components/student/StudentView';
@@ -121,6 +122,20 @@ export default function App() {
       setIsTeacherLoginOpen(true);
     }
   }, [role, isTeacherAuthenticated]);
+
+  // Remove student from active list when closing tab/browser
+  useEffect(() => {
+    if (viewMode !== 'student' || !classCode || !studentSession?.id) return;
+    const handleLeave = () => {
+      void removeStudentFromFirestore(classCode, studentSession.id);
+    };
+    window.addEventListener('pagehide', handleLeave);
+    window.addEventListener('beforeunload', handleLeave);
+    return () => {
+      window.removeEventListener('pagehide', handleLeave);
+      window.removeEventListener('beforeunload', handleLeave);
+    };
+  }, [viewMode, classCode, studentSession?.id]);
 
   // Real-time synchronization polling:
   // When student device is running, poll classroom stage every 3 seconds
@@ -240,7 +255,7 @@ export default function App() {
           isOpen={isTeacherLoginOpen}
           onClose={() => {
             setIsTeacherLoginOpen(false);
-            if (!isTeacherAuthenticated) {
+            if (!localStorage.getItem('togetheron_teacher_token')) {
               setRole('student');
               setViewMode('landing');
             }
@@ -365,7 +380,7 @@ export default function App() {
         isOpen={isTeacherLoginOpen}
         onClose={() => {
           setIsTeacherLoginOpen(false);
-          if (!isTeacherAuthenticated) {
+          if (!localStorage.getItem('togetheron_teacher_token')) {
             setRole('student');
             setViewMode('landing');
           }

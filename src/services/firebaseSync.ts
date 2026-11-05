@@ -3,6 +3,7 @@ import {
   getFirestore,
   doc,
   setDoc,
+  deleteDoc,
   onSnapshot,
   collection,
   Firestore,
@@ -92,6 +93,19 @@ export async function syncStudentToFirestore(
     );
   } catch (err) {
     console.warn('[TogetherON] Firestore student sync error:', err);
+  }
+}
+
+export async function removeStudentFromFirestore(
+  code: string,
+  studentId: string
+): Promise<void> {
+  const db = getDb();
+  if (!db || !code || !studentId) return;
+  try {
+    await deleteDoc(doc(db, 'classrooms', code.toUpperCase(), 'students', studentId));
+  } catch {
+    // ignore
   }
 }
 
