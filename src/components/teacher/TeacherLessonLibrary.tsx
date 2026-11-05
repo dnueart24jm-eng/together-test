@@ -67,31 +67,31 @@ export const TeacherLessonLibrary: React.FC<TeacherLessonLibraryProps> = ({
   };
 
   const handleRename = async (id: string) => {
-    if (!editTitle.trim()) return;
-    const res = await updateSavedLesson(id, { title: editTitle.trim() }, teacherToken);
-    if (res.success && res.lessons) {
-      setLessons(res.lessons);
-      setEditingId(null);
-    }
+    const trimmed = editTitle.trim();
+    if (!trimmed) return;
+    setLessons((prev) =>
+      prev.map((l) =>
+        l.id === id
+          ? { ...l, title: trimmed, lessonData: { ...l.lessonData, title: trimmed } }
+          : l
+      )
+    );
+    setEditingId(null);
+    await updateSavedLesson(id, { title: trimmed }, teacherToken);
   };
 
   const handleToggleArchive = async (record: SavedLessonRecord) => {
-    const res = await updateSavedLesson(
-      record.id,
-      { isArchived: !record.isArchived },
-      teacherToken
+    const nextArchived = !record.isArchived;
+    setLessons((prev) =>
+      prev.map((l) => (l.id === record.id ? { ...l, isArchived: nextArchived } : l))
     );
-    if (res.success && res.lessons) {
-      setLessons(res.lessons);
-    }
+    await updateSavedLesson(record.id, { isArchived: nextArchived }, teacherToken);
   };
 
   const handleDelete = async (id: string) => {
-    const res = await deleteSavedLesson(id, teacherToken);
-    if (res.success && res.lessons) {
-      setLessons(res.lessons);
-      setConfirmDeleteId(null);
-    }
+    setLessons((prev) => prev.filter((l) => l.id !== id));
+    setConfirmDeleteId(null);
+    await deleteSavedLesson(id, teacherToken);
   };
 
   const visibleLessons = lessons.filter((l) => (showArchived ? l.isArchived : !l.isArchived));
