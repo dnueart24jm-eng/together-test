@@ -100,7 +100,7 @@ export default function App() {
   const [isCommunicationOpen, setIsCommunicationOpen] = useState<boolean>(false);
   const [isNotebookOpen, setIsNotebookOpen] = useState<boolean>(false);
 
-  // Verify teacher token on mount or token change
+  // Verify saved teacher token on initial mount
   useEffect(() => {
     if (teacherToken) {
       checkTeacherAuth(teacherToken).then((valid) => {
@@ -113,7 +113,7 @@ export default function App() {
     } else {
       setIsTeacherAuthenticated(false);
     }
-  }, [teacherToken]);
+  }, []);
 
   useEffect(() => {
     if (role === 'teacher' && !isTeacherAuthenticated) {
