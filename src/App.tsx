@@ -26,6 +26,8 @@ import { TeacherLoginModal } from './components/auth/TeacherLoginModal';
 import { JoinClassModal } from './components/auth/JoinClassModal';
 import { ClassroomCommunicationModal } from './components/student/ClassroomCommunicationModal';
 import { NotebookModal } from './components/student/NotebookModal';
+import { LandingPage } from './components/LandingPage';
+import { StudentOnboarding } from './components/student/StudentOnboarding';
 
 export default function App() {
   const urlParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
@@ -34,6 +36,9 @@ export default function App() {
 
   // Current app role: student or teacher
   const [role, setRole] = useState<'student' | 'teacher'>(urlRole === 'teacher' ? 'teacher' : 'student');
+  const [viewMode, setViewMode] = useState<'landing' | 'student-onboarding' | 'student' | 'teacher'>(
+    urlRole === 'teacher' ? 'teacher' : urlCode ? 'student-onboarding' : 'landing'
+  );
 
   // Classroom Code System (Default: ON-7429)
   const [classCode, setClassCode] = useState<string>(urlCode ? urlCode.toUpperCase() : 'ON-7429');
@@ -216,12 +221,66 @@ export default function App() {
     void syncStudentToFirestore(code, session);
   };
 
+  if (viewMode === 'landing') {
+    return (
+      <>
+        <LandingPage
+          selectedLanguage={studentLanguage}
+          onSelectLanguage={setStudentLanguage}
+          onSelectStudent={() => setViewMode('student-onboarding')}
+          onSelectTeacher={() => {
+            localStorage.removeItem('togetheron_teacher_token');
+            setTeacherToken(null);
+            setIsTeacherAuthenticated(false);
+            setRole('teacher');
+            setViewMode('teacher');
+          }}
+        />
+        <TeacherLoginModal
+          isOpen={isTeacherLoginOpen}
+          onClose={() => {
+            setIsTeacherLoginOpen(false);
+            if (!isTeacherAuthenticated) {
+              setRole('student');
+              setViewMode('landing');
+            }
+          }}
+          onSuccess={(tok) => {
+            handleTeacherLoginSuccess(tok);
+            setRole('teacher');
+            setViewMode('teacher');
+          }}
+          initialMode={teacherLoginMode}
+        />
+      </>
+    );
+  }
+
+  if (viewMode === 'student-onboarding') {
+    return (
+      <StudentOnboarding
+        initialClassCode={classCode}
+        initialLanguage={studentLanguage}
+        initialLevel={koreanLevel}
+        onBack={() => setViewMode('landing')}
+        onComplete={(code, session) => {
+          handleStudentJoined(code, session);
+          setRole('student');
+          setViewMode('student');
+        }}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-amber-50/30 flex flex-col">
       {/* 1. Header with Top Bar Contract & Role Switcher */}
       <TopNav
         currentRole={role}
-        onRoleChange={handleRoleChange}
+        onRoleChange={(nextRole) => {
+          handleRoleChange(nextRole);
+          setViewMode(nextRole);
+        }}
         selectedLanguage={studentLanguage}
         selectedLevel={koreanLevel}
         onOpenSettings={() => setIsSettingsOpen(true)}
@@ -231,6 +290,7 @@ export default function App() {
         onOpenCommunication={() => setIsCommunicationOpen(true)}
         onOpenNotebook={() => setIsNotebookOpen(true)}
         isTeacherAuthenticated={isTeacherAuthenticated}
+        onGoHome={() => setViewMode('landing')}
       />
 
       {/* 2. Main Viewport Container */}
@@ -307,9 +367,14 @@ export default function App() {
           setIsTeacherLoginOpen(false);
           if (!isTeacherAuthenticated) {
             setRole('student');
+            setViewMode('landing');
           }
         }}
-        onSuccess={handleTeacherLoginSuccess}
+        onSuccess={(tok) => {
+          handleTeacherLoginSuccess(tok);
+          setRole('teacher');
+          setViewMode('teacher');
+        }}
         initialMode={teacherLoginMode}
       />
 

@@ -6,6 +6,7 @@ import {
   MessageSquare,
   BookMarked,
   LogIn,
+  Home,
 } from 'lucide-react';
 import { LanguageCode, KoreanLevel } from '../types/lesson';
 import { SUPPORTED_LANGUAGES, KOREAN_LEVELS, UI_STRINGS } from '../utils/i18n';
@@ -22,6 +23,7 @@ interface TopNavProps {
   onOpenCommunication?: () => void;
   onOpenNotebook?: () => void;
   isTeacherAuthenticated?: boolean;
+  onGoHome?: () => void;
 }
 
 export const TopNav: React.FC<TopNavProps> = ({
@@ -36,6 +38,7 @@ export const TopNav: React.FC<TopNavProps> = ({
   onOpenCommunication,
   onOpenNotebook,
   isTeacherAuthenticated,
+  onGoHome,
 }) => {
   const currentLangObj = SUPPORTED_LANGUAGES.find((l) => l.code === selectedLanguage);
   const currentLevelOptions = KOREAN_LEVELS[selectedLanguage] || KOREAN_LEVELS.en;
@@ -58,8 +61,13 @@ export const TopNav: React.FC<TopNavProps> = ({
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-6">
-        {/* Zone 1: Brand Wordmark */}
-        <div className="flex items-center gap-3 shrink-0">
+        {/* Zone 1: Brand Wordmark (Click to return to Landing Page) */}
+        <button
+          type="button"
+          onClick={onGoHome}
+          title="첫 화면으로 돌아가기"
+          className="flex items-center gap-3 shrink-0 hover:opacity-80 transition-opacity text-left cursor-pointer"
+        >
           <div className="w-9 h-9 rounded-xl bg-amber-500 text-white font-bold flex items-center justify-center text-base shadow-xs">
             ON
           </div>
@@ -68,7 +76,18 @@ export const TopNav: React.FC<TopNavProps> = ({
               함께ON <span className="text-xs font-semibold text-slate-400">TogetherON</span>
             </span>
           </div>
-        </div>
+        </button>
+
+        {onGoHome && (
+          <button
+            type="button"
+            onClick={onGoHome}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-600 bg-slate-100 hover:bg-amber-100 hover:text-amber-900 transition-colors shrink-0 cursor-pointer"
+          >
+            <Home className="w-3.5 h-3.5" />
+            <span>첫 화면</span>
+          </button>
+        )}
 
         {/* Zone 2: Navigation & Context Info */}
         <div className="hidden md:flex items-center gap-3 text-xs text-slate-500 whitespace-nowrap overflow-hidden">
