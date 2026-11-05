@@ -142,12 +142,12 @@ export const TeacherLoginModal: React.FC<TeacherLoginModalProps> = ({
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="비밀번호 입력 (기본: teacher1234)"
+                  placeholder="교사 비밀번호를 입력하세요"
                   className="w-full p-3 text-sm rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 bg-slate-50/60"
                   autoFocus
                 />
                 <p className="text-[11px] text-slate-400 mt-1">
-                  * 초기 기본 비밀번호는 <code className="bg-slate-100 px-1 py-0.5 rounded font-mono text-indigo-600">teacher1234</code> 입니다.
+                  * 서버 환경변수(<code className="bg-slate-100 px-1 py-0.5 rounded font-mono text-indigo-600">TEACHER_PASSWORD</code>)에 설정된 교사 비밀번호를 입력하세요.
                 </p>
               </div>
 

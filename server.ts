@@ -227,11 +227,10 @@ function hashPassword(password: string, salt: string): string {
 
 // Initialize default store
 const defaultSalt = 'togetheron-salt-seed';
-const defaultHash = hashPassword('teacher1234', defaultSalt);
 
 let serverStore: ServerStoreData = {
   teacherSalt: defaultSalt,
-  teacherPasswordHash: defaultHash,
+  teacherPasswordHash: '',
   classrooms: {
     'ON-7429': {
       code: 'ON-7429',
@@ -350,10 +349,18 @@ app.post('/api/auth/teacher/login', (req: Request, res: Response): void => {
   }
 
   const envPassword = process.env.TEACHER_PASSWORD;
-  const computedHash = hashPassword(password, serverStore.teacherSalt);
-  const isMatch =
-    (envPassword && password === envPassword) ||
-    computedHash === serverStore.teacherPasswordHash;
+  const hasConfiguredPassword = Boolean(envPassword || serverStore.teacherPasswordHash);
+
+  if (!hasConfiguredPassword) {
+    res.status(500).json({
+      error: '서버에 교사 비밀번호(TEACHER_PASSWORD)가 설정되지 않았습니다. Netlify 환경변수를 확인해 주세요.',
+    });
+    return;
+  }
+
+  const isMatch = envPassword
+    ? password === envPassword
+    : hashPassword(password, serverStore.teacherSalt) === serverStore.teacherPasswordHash;
 
   if (!isMatch) {
     res.status(401).json({ error: '비밀번호가 올바르지 않습니다.' });
