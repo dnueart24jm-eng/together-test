@@ -110,6 +110,13 @@ export default function App() {
     }
   }, [teacherToken]);
 
+  useEffect(() => {
+    if (role === 'teacher' && !isTeacherAuthenticated) {
+      setTeacherLoginMode('login');
+      setIsTeacherLoginOpen(true);
+    }
+  }, [role, isTeacherAuthenticated]);
+
   // Real-time synchronization polling:
   // When student device is running, poll classroom stage every 3 seconds
   // so if teacher moves the class to ACT1 or ACT2, student screen updates!
@@ -241,7 +248,7 @@ export default function App() {
             onOpenCommunication={() => setIsCommunicationOpen(true)}
             onOpenNotebook={() => setIsNotebookOpen(true)}
           />
-        ) : (
+        ) : isTeacherAuthenticated ? (
           <TeacherView
             lessonData={lessonData}
             onUpdateLessonData={handleUpdateLessonData}
@@ -255,6 +262,32 @@ export default function App() {
               setIsTeacherLoginOpen(true);
             }}
           />
+        ) : (
+          <div className="max-w-md mx-auto mt-16 p-8 bg-white rounded-2xl border border-slate-200 shadow-sm text-center space-y-4">
+            <h2 className="text-lg font-bold text-slate-900">교사용 관리자 인증이 필요합니다</h2>
+            <p className="text-sm text-slate-600">
+              교사 비밀번호를 입력하여 인증한 후 수업 관리 페이지에 접근할 수 있습니다.
+            </p>
+            <div className="flex items-center justify-center gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setTeacherLoginMode('login');
+                  setIsTeacherLoginOpen(true);
+                }}
+                className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-xl transition-colors"
+              >
+                교사 로그인
+              </button>
+              <button
+                type="button"
+                onClick={() => setRole('student')}
+                className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium rounded-xl transition-colors"
+              >
+                학생 화면으로
+              </button>
+            </div>
+          </div>
         )}
       </div>
 
@@ -270,7 +303,12 @@ export default function App() {
       {/* 4. Teacher Password Login & Setup Modal */}
       <TeacherLoginModal
         isOpen={isTeacherLoginOpen}
-        onClose={() => setIsTeacherLoginOpen(false)}
+        onClose={() => {
+          setIsTeacherLoginOpen(false);
+          if (!isTeacherAuthenticated) {
+            setRole('student');
+          }
+        }}
         onSuccess={handleTeacherLoginSuccess}
         initialMode={teacherLoginMode}
       />
