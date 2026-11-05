@@ -123,15 +123,19 @@ export default function App() {
     }
   }, [role, isTeacherAuthenticated]);
 
-  // Remove student from active list when closing tab/browser
+  // Remove student from active list when closing tab/browser + 20s heartbeat
   useEffect(() => {
     if (viewMode !== 'student' || !classCode || !studentSession?.id) return;
     const handleLeave = () => {
       void removeStudentFromFirestore(classCode, studentSession.id);
     };
+    const heartbeat = setInterval(() => {
+      void syncStudentToFirestore(classCode, studentSession);
+    }, 20000);
     window.addEventListener('pagehide', handleLeave);
     window.addEventListener('beforeunload', handleLeave);
     return () => {
+      clearInterval(heartbeat);
       window.removeEventListener('pagehide', handleLeave);
       window.removeEventListener('beforeunload', handleLeave);
     };

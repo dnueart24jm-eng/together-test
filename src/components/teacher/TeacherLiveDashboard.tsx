@@ -66,7 +66,11 @@ export const TeacherLiveDashboard: React.FC<TeacherLiveDashboardProps> = ({
     }, 3000);
     const unsub = subscribeStudentsFromFirestore(classCode, (firestoreStudents) => {
       hasFirestoreStudents = true;
-      setStudents(firestoreStudents);
+      const now = Date.now();
+      const activeOnly = firestoreStudents.filter(
+        (s) => now - (s.lastActive || 0) < 60 * 1000
+      );
+      setStudents(activeOnly);
     });
     return () => {
       clearInterval(interval);
