@@ -1,0 +1,44 @@
+{
+  "entities": {
+    "Classroom": {
+      "title": "Classroom",
+      "description": "Real-time classroom session state",
+      "type": "object",
+      "properties": {
+        "code": { "type": "string" },
+        "title": { "type": "string" },
+        "currentStageId": { "type": "string" },
+        "isActive": { "type": "boolean" },
+        "lessonData": { "type": "object" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["code", "currentStageId", "isActive"]
+    },
+    "StudentSession": {
+      "title": "StudentSession",
+      "description": "Student participation and task status in a classroom",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "classCode": { "type": "string" },
+        "nickname": { "type": "string" },
+        "language": { "type": "string" },
+        "koreanLevel": { "type": "string" },
+        "currentStageId": { "type": "string" },
+        "taskStates": { "type": "object" },
+        "lastActive": { "type": "number" }
+      },
+      "required": ["id", "classCode", "nickname", "language"]
+    }
+  },
+  "firestore": {
+    "/classrooms/{classCode}": {
+      "schema": "Classroom",
+      "description": "Classroom state document"
+    },
+    "/classrooms/{classCode}/students/{studentId}": {
+      "schema": "StudentSession",
+      "description": "Student session document"
+    }
+  }
+}

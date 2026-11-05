@@ -1,0 +1,6 @@
+{
+  "name": "함께ON (TogetherON)",
+  "description": "AI 기반 이주배경 초등학생 수업 이해 및 참여 지원 웹앱 - 한국어가 익숙하지 않은 학생이 일반학급 수업에 친구들과 함께 참여하도록 돕는 교육용 학습 도구",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
