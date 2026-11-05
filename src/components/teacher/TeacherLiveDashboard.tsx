@@ -48,7 +48,8 @@ export const TeacherLiveDashboard: React.FC<TeacherLiveDashboardProps> = ({
     try {
       const data = await getClassroomDashboard(classCode, teacherToken);
       if (data && data.students) {
-        setStudents(data.students);
+        const now = Date.now();
+        setStudents(data.students.filter((s) => now - (s.lastActive || 0) < 60 * 1000));
       }
     } catch (err) {
       console.warn('Dashboard poll error:', err);

@@ -193,10 +193,17 @@ export default function App() {
   const stageTitleToDisplay = localizedStage?.title || activeStage?.title;
 
   const handleUpdateLessonData = (newLesson: LessonData) => {
+    clearSessionCache();
     setLessonData(newLesson);
+    const nextStageId = newLesson.stages?.[0]?.id || currentStageId;
     if (newLesson.stages.length > 0) {
-      setCurrentStageId(newLesson.stages[0].id);
+      setCurrentStageId(nextStageId);
     }
+    void syncClassroomToFirestore(classCode, {
+      lessonData: newLesson,
+      currentStageId: nextStageId,
+      isActive: true,
+    });
   };
 
   const handleSaveSettings = (lang: LanguageCode, level: KoreanLevel) => {
