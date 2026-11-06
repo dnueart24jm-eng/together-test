@@ -1176,7 +1176,7 @@ app.post('/api/gemini/explain-current', async (req: Request, res: Response): Pro
   }
 
   // Robust intelligent multilingual educational generator
-  const fallback = getIntelligentCurrentExplanation(stage, studentLanguage, koreanLevel, simplifyMore);
+  const fallback = await getIntelligentCurrentExplanation(stage, studentLanguage, koreanLevel, simplifyMore);
   if (studentLanguage !== 'ko' && stage?.currentActivity) {
     const translatedActivity = await translateTextFree(stage.currentActivity, studentLanguage);
     if (translatedActivity) {
@@ -1455,7 +1455,7 @@ app.post('/api/gemini/teacher-preview', async (req: Request, res: Response): Pro
 // Intelligent Multilingual Educational Fallback Engines
 // ==========================================
 
-function getIntelligentCurrentExplanation(stage: any, lang: string, level: string, simpler: boolean) {
+async function getIntelligentCurrentExplanation(stage: any, lang: string, level: string, simpler: boolean) {
   const stageTitle = stage?.title || '수업 단계';
   const activity = stage?.currentActivity || '친구들과 함께 교과서를 살펴보고 있습니다.';
 
@@ -1532,19 +1532,26 @@ function getIntelligentCurrentExplanation(stage: any, lang: string, level: strin
   };
 
   const rawVocabs = stage?.keyVocabulary || ['옛날', '오늘날', '편리함'];
-  const keyVocabulary = rawVocabs.slice(0, 4).map((w: string) => {
-    const entry = vocabDict[w]?.[lang] || vocabDict[w]?.['en'] || {
-      native: `[${lang}] ${w}`,
-      pron: w,
-      meaning: '교실에서 친구들과 함께 배우는 핵심 낱말입니다.',
-    };
-    return {
-      korean: w,
-      native: entry.native,
-      pronunciation: entry.pron,
-      meaning: entry.meaning,
-    };
-  });
+  const keyVocabulary = await Promise.all(
+    rawVocabs.slice(0, 4).map(async (w: string) => {
+      const dictEntry = vocabDict[w]?.[lang] || vocabDict[w]?.['en'];
+      if (dictEntry) {
+        return {
+          korean: w,
+          native: dictEntry.native,
+          pronunciation: dictEntry.pron,
+          meaning: dictEntry.meaning,
+        };
+      }
+      const translated = lang === 'ko' ? w : await translateTextFree(w, lang);
+      return {
+        korean: w,
+        native: translated || w,
+        pronunciation: w,
+        meaning: '',
+      };
+    })
+  );
 
   return {
     easyKorean: simpler
