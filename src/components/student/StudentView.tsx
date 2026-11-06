@@ -238,6 +238,7 @@ export const StudentView: React.FC<StudentViewProps> = ({
             stage={currentStage}
             studentLanguage={studentLanguage}
             koreanLevel={koreanLevel}
+            onNavigateToMenu4={() => setActiveMenu('menu4')}
           />
         )}
 

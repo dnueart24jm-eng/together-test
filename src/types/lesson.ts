@@ -173,14 +173,19 @@ export interface AIExplainCurrentResponse {
 export interface AIThinkingScaffoldResponse {
   questionEasyKorean: string;
   questionInNative: string;
-  comparisonTarget: string;
-  scaffoldingSteps: Array<{
+  whatToThinkNative?: string;
+  whatToThinkKorean?: string;
+  thinkingPoints?: string[];
+  starterSentenceKorean?: string;
+  starterSentenceNative?: string;
+  comparisonTarget?: string;
+  scaffoldingSteps?: Array<{
     stepNumber: number;
     guideKo: string;
     guideNative: string;
     promptToThink: string;
   }>;
-  reminderNotice: string;
+  reminderNotice?: string;
 }
 
 export interface AISpeechBridgeResponse {

@@ -1079,7 +1079,7 @@ JSON 형식:
   } else {
     const nativeTranslated = await translateTextFree(text, studentLanguage);
     res.json({
-      translatedText: nativeTranslated || `[${studentLanguage}] ${text}`,
+      translatedText: nativeTranslated || text,
       pronunciation: '',
       detectedMeaning: text,
     });
@@ -1287,7 +1287,7 @@ app.post('/api/gemini/scaffold-thinking', async (req: Request, res: Response): P
     }
   }
 
-  res.json(getIntelligentThinkingScaffold(teacherQuestion, stage, studentLanguage, koreanLevel));
+  res.json(await getIntelligentThinkingScaffold(teacherQuestion, stage, studentLanguage, koreanLevel));
 });
 
 // 3. Speech Bridge (/api/gemini/speech-bridge)
@@ -1568,31 +1568,36 @@ async function getIntelligentCurrentExplanation(stage: any, lang: string, level:
 }
 
 // Fixed getIntelligentThinkingScaffold: promptToThink is FULLY translated for all 8 languages!
-function getIntelligentThinkingScaffold(question: string, stage: any, lang: string, level: string) {
+async function getIntelligentThinkingScaffold(question: string, stage: any, lang: string, level: string) {
   const isComparing = question.includes('비교') || question.includes('옛날') || question.includes('오늘날');
+
+  let translatedQ = question;
+  if (lang !== 'ko') {
+    translatedQ = (await translateTextFree(question, lang)) || question;
+  }
 
   const nativeQuestionTranslations: Record<string, string> = {
     en: isComparing
       ? 'Comparing homes from the past and today, what are the good points of today’s life?'
-      : `Teacher asks: "${question}"`,
+      : translatedQ,
     vi: isComparing
       ? 'So với ngôi nhà ngày xưa, ngôi nhà ngày nay có điểm gì tốt hơn?'
-      : `Thầy cô hỏi: "${question}"`,
+      : translatedQ,
     ru: isComparing
       ? 'Если сравнить дома в прошлом и сегодня, в чем преимущества современной жизни?'
-      : `Учитель спрашивает: "${question}"`,
+      : translatedQ,
     'uz-Latn': isComparing
       ? 'Qadimgi uy hayoti bilan solishtirganda, bugungi zamonaviy uyning qanday afzalliklari bor?'
-      : `O‘qituvchi so‘raydi: "${question}"`,
+      : translatedQ,
     'uz-Cyrl': isComparing
       ? 'Қадимги уй ҳаёти билан солиштирганда, бугунги замонавий уйнинг қандай афзалликлари бор?'
-      : `Ўқитувчи сўрайди: "${question}"`,
+      : translatedQ,
     'zh-Hans': isComparing
       ? '与过去的家庭相比，当今的家庭有哪些优点？'
-      : `老师提问：“${question}”`,
+      : translatedQ,
     'zh-Hant': isComparing
       ? '與過去的家庭相比，當今的家庭有哪些優點？'
-      : `老師提問：「${question}」`,
+      : translatedQ,
     ko: question,
   };
 
