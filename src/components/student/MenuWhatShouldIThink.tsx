@@ -67,9 +67,44 @@ export const MenuWhatShouldIThink: React.FC<MenuWhatShouldIThinkProps> = ({
         refresh
       );
       setAiScaffold(data);
-    } catch (err: any) {
-      console.error('Failed to load thinking scaffold:', err);
-      setError('생각 힌트를 불러오는 중 일시적인 문제가 생겼지만, 아래 질문과 수업 자료를 통해 생각할 수 있어요.');
+    } catch {
+      const isKo = studentLanguage === 'ko';
+      setAiScaffold({
+        hintSteps: [
+          {
+            step: 1,
+            title: isKo ? '1단계: 질문의 핵심 찾기' : 'Step 1: Find the key point',
+            hint: isKo
+              ? '질문에서 가장 중요한 낱말이 무엇인지 찾아보세요.'
+              : 'Look for the most important words in the question.',
+          },
+          {
+            step: 2,
+            title: isKo ? '2단계: 수업 내용 떠올리기' : 'Step 2: Recall the lesson',
+            hint: isKo
+              ? '방금 배운 내용이나 교과서 그림을 떠올려 보세요.'
+              : 'Think about what we just learned or the pictures in the textbook.',
+          },
+          {
+            step: 3,
+            title: isKo ? '3단계: 이유 생각하기' : 'Step 3: Think about why',
+            hint: isKo
+              ? '왜 그렇게 생각했는지 한 가지 이유를 떠올려 보세요.'
+              : 'Think of one reason why you think so.',
+          },
+          {
+            step: 4,
+            title: isKo ? '4단계: 내 생각 정리하기' : 'Step 4: Organize your idea',
+            hint: isKo
+              ? '모국어로 먼저 정리한 뒤, 한국어 표현으로 말해 보세요.'
+              : 'Organize your idea in your language first, then try saying it in Korean.',
+          },
+        ],
+        starterSentenceKorean: '제 생각에는 ~입니다. 왜냐하면 ~이기 때문입니다.',
+        starterSentenceNative: isKo
+          ? '제 생각에는 ~입니다. 왜냐하면 ~이기 때문입니다.'
+          : 'In my opinion, ~ because ~.',
+      } as any);
     } finally {
       setLoading(false);
     }
