@@ -12,6 +12,137 @@ interface StudentOnboardingProps {
   onComplete: (code: string, session: StudentSession) => void;
 }
 
+const ONBOARDING_I18N: Record<
+  LanguageCode,
+  {
+    backToHome: string;
+    badge: string;
+    welcomeTitle: string;
+    welcomeDesc: string;
+    nameLabel: string;
+    namePlaceholder: string;
+    classCodeLabel: string;
+    languageLabel: string;
+    levelLabel: string;
+    submitButton: string;
+    connecting: string;
+    connectError: string;
+  }
+> = {
+  ko: {
+    backToHome: '첫 화면으로 돌아가기',
+    badge: '학생 수업 입장',
+    welcomeTitle: '반가워요! 수업 준비를 해볼까요?',
+    welcomeDesc: '이름과 사용하는 언어를 선택하면 나에게 맞는 화면으로 수업이 열립니다.',
+    nameLabel: '이름 또는 별명',
+    namePlaceholder: '예: 민수, 7번, Alex',
+    classCodeLabel: '수업 코드',
+    languageLabel: '사용할 모국어 (My Language)',
+    levelLabel: '한국어 이해 수준 (Korean Level)',
+    submitButton: '수업 시작하기',
+    connecting: '수업에 연결하는 중...',
+    connectError: '수업에 연결하는 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.',
+  },
+  en: {
+    backToHome: 'Back to Home',
+    badge: 'Student Class Entry',
+    welcomeTitle: 'Welcome! Ready for today’s lesson?',
+    welcomeDesc: 'Choose your name and language to customize the lesson screen for you.',
+    nameLabel: 'Name or Nickname',
+    namePlaceholder: 'e.g., Alex, Student 7, Minsu',
+    classCodeLabel: 'Class Code',
+    languageLabel: 'My Language',
+    levelLabel: 'Korean Understanding Level',
+    submitButton: 'Start Class',
+    connecting: 'Connecting to class...',
+    connectError: 'There was a problem connecting to the class. Please try again in a moment.',
+  },
+  vi: {
+    backToHome: 'Quay lại trang chủ',
+    badge: 'Vào lớp học dành cho học sinh',
+    welcomeTitle: 'Rất vui được gặp em! Hãy chuẩn bị cho bài học nhé!',
+    welcomeDesc: 'Nhập tên và chọn ngôn ngữ để màn hình bài học phù hợp nhất với em.',
+    nameLabel: 'Tên hoặc Biệt danh',
+    namePlaceholder: 'Ví dụ: Linh, Số 7, Alex',
+    classCodeLabel: 'Mã lớp học',
+    languageLabel: 'Tiếng mẹ đẻ của em',
+    levelLabel: 'Mức độ hiểu tiếng Hàn',
+    submitButton: 'Bắt đầu bài học',
+    connecting: 'Đang kết nối vào lớp...',
+    connectError: 'Có lỗi khi kết nối vào lớp. Vui lòng thử lại sau ít phút.',
+  },
+  ru: {
+    backToHome: 'Назад на главную',
+    badge: 'Вход на урок для ученика',
+    welcomeTitle: 'Привет! Давай приготовимся к уроку!',
+    welcomeDesc: 'Укажи имя и выбери язык, чтобы экран урока открылся на понятном тебе языке.',
+    nameLabel: 'Имя или Никнейм',
+    namePlaceholder: 'Например: Саша, №7, Alex',
+    classCodeLabel: 'Код класса',
+    languageLabel: 'Мой родной язык',
+    levelLabel: 'Уровень понимания корейского языка',
+    submitButton: 'Начать урок',
+    connecting: 'Подключение к уроку...',
+    connectError: 'Произошла ошибка при подключении к уроку. Попробуйте еще раз.',
+  },
+  'uz-Latn': {
+    backToHome: 'Bosh sahifaga qaytish',
+    badge: 'O‘quvchi darsga kirishi',
+    welcomeTitle: 'Xush kelibsiz! Darsga tayyorlanamizmi?',
+    welcomeDesc: 'Ismingiz va tilingizni tanlasangiz, dars ekrani sizga mos holda ochiladi.',
+    nameLabel: 'Ism yoki taxallus',
+    namePlaceholder: 'Masalan: Ali, 7-raqam, Alex',
+    classCodeLabel: 'Sinf kodi',
+    languageLabel: 'Mening ona tilim',
+    levelLabel: 'Koreys tilini tushunish darajasi',
+    submitButton: 'Darsni boshlash',
+    connecting: 'Darsga ulanmoqda...',
+    connectError: 'Darsga ulanishda xatolik yuz berdi. Birozdan so‘ng qayta urinib ko‘ring.',
+  },
+  'uz-Cyrl': {
+    backToHome: 'Бош саҳифага қайтиш',
+    badge: 'Ўқувчи дарсга кириши',
+    welcomeTitle: 'Хуш келибсиз! Дарсга тайёрланамизми?',
+    welcomeDesc: 'Исмингиз ва тилингизни танласангиз, дарс экрани сизга мос ҳолда очилади.',
+    nameLabel: 'Исм ёки тахаллус',
+    namePlaceholder: 'Масалан: Али, 7-рақам, Alex',
+    classCodeLabel: 'Синф коди',
+    languageLabel: 'Менинг она тилим',
+    levelLabel: 'Корейс тилини тушуниш даражаси',
+    submitButton: 'Дарсни бошлаш',
+    connecting: 'Дарсга уланмоқда...',
+    connectError: 'Дарсга уланишда хатолик юз берди. Бироздан сўнг қайта уриниб кўринг.',
+  },
+  'zh-Hans': {
+    backToHome: '返回首页',
+    badge: '学生进入课堂',
+    welcomeTitle: '你好！准备好开始今天的课程了吗？',
+    welcomeDesc: '输入名字并选择使用的语言，即可为你呈现专属的课堂界面。',
+    nameLabel: '姓名或昵称',
+    namePlaceholder: '例如：小明、7号、Alex',
+    classCodeLabel: '课堂代码',
+    languageLabel: '使用的母语',
+    levelLabel: '韩语理解水平',
+    submitButton: '开始上课',
+    connecting: '正在连接课堂...',
+    connectError: '连接课堂时出现问题，请稍后重试。',
+  },
+  'zh-Hant': {
+    backToHome: '返回首頁',
+    badge: '學生進入課堂',
+    welcomeTitle: '你好！準備好開始今天的課程了嗎？',
+    welcomeDesc: '輸入名字並選擇使用的語言，即可為你呈現專屬的課堂介面。',
+    nameLabel: '姓名或暱稱',
+    namePlaceholder: '例如：小明、7號、Alex',
+    classCodeLabel: '課堂代碼',
+    languageLabel: '使用的母語',
+    levelLabel: '韓語理解水平',
+    submitButton: '開始上課',
+    connecting: '正在連接課堂...',
+    connectError: '連接課堂時出現問題，請稍後重試。',
+  },
+};
+
 export const StudentOnboarding: React.FC<StudentOnboardingProps> = ({
   initialClassCode,
   initialLanguage,
@@ -25,6 +156,8 @@ export const StudentOnboarding: React.FC<StudentOnboardingProps> = ({
   const [koreanLevel, setKoreanLevel] = useState<KoreanLevel>(initialLevel || 'beginner');
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+
+  const t = ONBOARDING_I18N[language] || ONBOARDING_I18N.en;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,7 +186,7 @@ export const StudentOnboarding: React.FC<StudentOnboardingProps> = ({
         });
       }
     } catch {
-      setError('수업에 연결하는 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+      setError(t.connectError);
     } finally {
       setLoading(false);
     }
@@ -65,22 +198,22 @@ export const StudentOnboarding: React.FC<StudentOnboardingProps> = ({
         <button
           type="button"
           onClick={onBack}
-          className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-600 hover:text-slate-900 mb-5 px-3 py-1.5 rounded-xl hover:bg-slate-100 transition-colors"
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-600 hover:text-slate-900 mb-5 px-3 py-1.5 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>첫 화면으로 돌아가기</span>
+          <span>{t.backToHome}</span>
         </button>
 
         <div className="bg-white rounded-3xl border border-amber-200/80 shadow-sm p-6 sm:p-8">
           <div className="mb-6">
             <span className="inline-block text-xs font-bold text-amber-800 bg-amber-100 px-3 py-1 rounded-full mb-2">
-              학생 수업 입장
+              {t.badge}
             </span>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
-              반가워요! 수업 준비를 해볼까요?
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 leading-snug">
+              {t.welcomeTitle}
             </h1>
-            <p className="text-sm text-slate-600 mt-1">
-              이름과 사용하는 언어를 선택하면 나에게 맞는 화면으로 수업이 열립니다.
+            <p className="text-sm text-slate-600 mt-1.5 leading-relaxed">
+              {t.welcomeDesc}
             </p>
           </div>
 
@@ -90,13 +223,13 @@ export const StudentOnboarding: React.FC<StudentOnboardingProps> = ({
               <div className="sm:col-span-2">
                 <label className="text-xs font-bold text-slate-700 block mb-1.5 flex items-center gap-1.5">
                   <User className="w-4 h-4 text-amber-600" />
-                  <span>이름 또는 별명 (Nickname)</span>
+                  <span>{t.nameLabel}</span>
                 </label>
                 <input
                   type="text"
                   value={nickname}
                   onChange={(e) => setNickname(e.target.value)}
-                  placeholder="예: 민수, 7번, Alex"
+                  placeholder={t.namePlaceholder}
                   className="w-full p-3.5 text-base font-semibold rounded-2xl border border-slate-200 bg-slate-50/60 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
                   autoFocus
                 />
@@ -104,7 +237,7 @@ export const StudentOnboarding: React.FC<StudentOnboardingProps> = ({
               <div>
                 <label className="text-xs font-bold text-slate-700 block mb-1.5 flex items-center gap-1.5">
                   <KeyRound className="w-4 h-4 text-amber-600" />
-                  <span>수업 코드</span>
+                  <span>{t.classCodeLabel}</span>
                 </label>
                 <input
                   type="text"
@@ -120,7 +253,7 @@ export const StudentOnboarding: React.FC<StudentOnboardingProps> = ({
             <div>
               <label className="text-xs font-bold text-slate-700 block mb-2 flex items-center gap-1.5">
                 <Globe className="w-4 h-4 text-amber-600" />
-                <span>사용할 모국어 (My Language)</span>
+                <span>{t.languageLabel}</span>
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                 {SUPPORTED_LANGUAGES.map((lang) => {
@@ -130,9 +263,9 @@ export const StudentOnboarding: React.FC<StudentOnboardingProps> = ({
                       key={lang.code}
                       type="button"
                       onClick={() => setLanguage(lang.code)}
-                      className={`p-3 rounded-2xl border text-left transition-all ${
+                      className={`p-3 rounded-2xl border text-left transition-all cursor-pointer ${
                         isSelected
-                          ? 'border-amber-500 bg-amber-50 text-amber-950 ring-2 ring-amber-400/30 font-bold'
+                          ? 'border-amber-500 bg-amber-50 text-amber-950 ring-2 ring-amber-400/30 font-bold shadow-2xs'
                           : 'border-slate-200 bg-white hover:border-slate-300 text-slate-700 font-medium'
                       }`}
                     >
@@ -147,7 +280,7 @@ export const StudentOnboarding: React.FC<StudentOnboardingProps> = ({
             <div>
               <label className="text-xs font-bold text-slate-700 block mb-2 flex items-center gap-1.5">
                 <Sparkles className="w-4 h-4 text-amber-600" />
-                <span>한국어 이해 수준 (Korean Level)</span>
+                <span>{t.levelLabel}</span>
               </label>
               <div className="grid grid-cols-3 gap-3">
                 {(KOREAN_LEVELS[language] || KOREAN_LEVELS.ko).map((lvl) => {
@@ -157,13 +290,16 @@ export const StudentOnboarding: React.FC<StudentOnboardingProps> = ({
                       key={lvl.level}
                       type="button"
                       onClick={() => setKoreanLevel(lvl.level)}
-                      className={`p-3.5 rounded-2xl border text-center transition-all ${
+                      className={`p-3.5 rounded-2xl border text-center transition-all cursor-pointer ${
                         isSelected
-                          ? 'border-amber-500 bg-amber-50 text-amber-950 ring-2 ring-amber-400/30 font-bold'
+                          ? 'border-amber-500 bg-amber-50 text-amber-950 ring-2 ring-amber-400/30 font-bold shadow-2xs'
                           : 'border-slate-200 bg-white hover:border-slate-300 text-slate-700 font-medium'
                       }`}
                     >
-                      <span className="text-sm block">{lvl.titleKo}</span>
+                      <span className="text-sm block font-bold">{lvl.titleNative}</span>
+                      {language !== 'ko' && (
+                        <span className="text-[11px] text-slate-400 block mt-0.5">({lvl.titleKo})</span>
+                      )}
                     </button>
                   );
                 })}
@@ -179,9 +315,9 @@ export const StudentOnboarding: React.FC<StudentOnboardingProps> = ({
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-4 px-6 bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-base sm:text-lg rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-60"
+              className="w-full py-4 px-6 bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-base sm:text-lg rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-60 cursor-pointer"
             >
-              <span>{loading ? '수업에 연결하는 중...' : '수업 시작하기'}</span>
+              <span>{loading ? t.connecting : t.submitButton}</span>
               <ArrowRight className="w-5 h-5" />
             </button>
           </form>

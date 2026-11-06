@@ -1371,7 +1371,7 @@ app.post('/api/gemini/speech-bridge', async (req: Request, res: Response): Promi
     }
   }
 
-  const bridgeFallback = getIntelligentSpeechBridge(studentInput, stage, studentLanguage, koreanLevel);
+  const bridgeFallback = await getIntelligentSpeechBridge(studentInput, stage, studentLanguage, koreanLevel);
   const koTranslated = await translateTextFree(studentInput, 'ko');
   if (koTranslated) {
     bridgeFallback.koreanSentenceEasy = koTranslated;
@@ -1723,7 +1723,7 @@ function getIntelligentThinkingScaffold(question: string, stage: any, lang: stri
   };
 }
 
-function getIntelligentSpeechBridge(input: string, stage: any, lang: string, level: string) {
+async function getIntelligentSpeechBridge(input: string, stage: any, lang: string, level: string) {
   const trimmed = input.trim();
   const lower = trimmed.toLowerCase();
 
@@ -1748,9 +1748,10 @@ function getIntelligentSpeechBridge(input: string, stage: any, lang: string, lev
     pron = 'Wi-heom-han il-eul gi-gye-ga dae-sin-hae jwo-seo deo an-jeon-hae.';
     pronTip = '"an-jeon-hae" ends with a comfortable vowel sound, meaning "it is safe".';
   } else {
-    easySentence = `${trimmed} 점이 가장 좋다고 생각해.`;
-    politeSentence = `저는 ${trimmed} 점이 오늘날 가장 크게 달라진 장점이라고 생각합니다.`;
-    pron = `${trimmed} jeom-i ga-jang joh-da-go saeng-gak-hae.`;
+    const koTranslated = lang === 'ko' ? trimmed : (await translateTextFree(trimmed, 'ko')) || trimmed;
+    easySentence = koTranslated;
+    politeSentence = '';
+    pron = koTranslated;
     pronTip = '"saeng-gak-hae" means "I think" when talking to classmates.';
   }
 

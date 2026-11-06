@@ -458,7 +458,17 @@ export const ClassroomCommunicationModal: React.FC<ClassroomCommunicationModalPr
           {/* Voice Recognition Status Badge */}
           <div className="flex items-center justify-between text-xs">
             <span className="font-semibold text-slate-600">
-              입력 언어: <strong className="text-slate-900">{mode === 'speak' ? studentLanguage.toUpperCase() : 'KO (한국어)'}</strong>
+              {({
+                ko: '입력 언어:',
+                en: 'Input Language:',
+                vi: 'Ngôn ngữ nhập:',
+                ru: 'Язык ввода:',
+                'uz-Latn': 'Kiritish tili:',
+                'uz-Cyrl': 'Киритиш тили:',
+                'zh-Hans': '输入语言：',
+                'zh-Hant': '輸入語言：',
+              } as Record<LanguageCode, string>)[studentLanguage] || 'Input Language:'}{' '}
+              <strong className="text-slate-900">{mode === 'speak' ? studentLanguage.toUpperCase() : 'KO'}</strong>
             </span>
             <div className="flex items-center gap-2">
               {voiceStatus === 'listening' && (
@@ -580,7 +590,18 @@ export const ClassroomCommunicationModal: React.FC<ClassroomCommunicationModalPr
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <span className="text-[11px] font-bold text-slate-500 block mb-1">
-                      {mode === 'speak' ? t.friendSentenceLabel : '번역 결과'}
+                      {mode === 'speak'
+                        ? t.friendSentenceLabel
+                        : ({
+                            ko: '번역 결과',
+                            en: 'Translation Result',
+                            vi: 'Kết quả dịch',
+                            ru: 'Результат перевода',
+                            'uz-Latn': 'Tarjima natijasi',
+                            'uz-Cyrl': 'Таржима натижаси',
+                            'zh-Hans': '翻译结果',
+                            'zh-Hant': '翻譯結果',
+                          } as Record<LanguageCode, string>)[studentLanguage] || 'Translation Result'}
                     </span>
                     <p className="text-base sm:text-lg font-bold text-slate-900 leading-snug">
                       "{result.translatedText}"

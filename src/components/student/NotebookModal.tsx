@@ -244,7 +244,16 @@ export const NotebookModal: React.FC<NotebookModalProps> = ({
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="궁금한 한국어 단어, 문장 또는 모국어 표현을 입력하세요 (예: 지능정보화, I want to help)"
+                placeholder={({
+                  ko: '궁금한 한국어 단어, 문장 또는 모국어 표현을 입력하세요',
+                  en: 'Type a Korean word, sentence, or phrase in your language...',
+                  vi: 'Nhập từ, câu tiếng Hàn hoặc cụm từ bằng tiếng mẹ đẻ...',
+                  ru: 'Введите корейское слово, фразу или выражение на родном языке...',
+                  'uz-Latn': 'Koreyscha so‘z, gap yoki ona tilingizdagi iborani kiriting...',
+                  'uz-Cyrl': 'Корейсча сўз, гап ёки она тилингиздаги иборани киритинг...',
+                  'zh-Hans': '请输入想查询的韩语单词、句子或母语表达...',
+                  'zh-Hant': '請輸入想查詢的韓語單字、句子或母語表達...',
+                } as Record<LanguageCode, string>)[studentLanguage] || 'Type a Korean word or phrase...'}
                 className="w-full text-xs sm:text-sm font-medium pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:outline-hidden focus:border-amber-500 text-slate-900"
               />
             </div>
@@ -254,7 +263,29 @@ export const NotebookModal: React.FC<NotebookModalProps> = ({
               className="px-4 py-2.5 bg-amber-500 hover:bg-amber-600 disabled:bg-slate-300 text-white font-bold text-xs rounded-xl shadow-xs flex items-center justify-center gap-1.5 shrink-0"
             >
               <Sparkles className="w-4 h-4" />
-              <span>{lookupLoading ? '검색 중...' : 'AI 뜻풀이 검색'}</span>
+              <span>
+                {lookupLoading
+                  ? ({
+                      ko: '검색 중...',
+                      en: 'Searching...',
+                      vi: 'Đang tìm...',
+                      ru: 'Поиск...',
+                      'uz-Latn': 'Qidirilmoqda...',
+                      'uz-Cyrl': 'Қидирилмоқда...',
+                      'zh-Hans': '搜索中...',
+                      'zh-Hant': '搜尋中...',
+                    } as Record<LanguageCode, string>)[studentLanguage] || 'Searching...'
+                  : ({
+                      ko: 'AI 뜻풀이 검색',
+                      en: 'AI Search',
+                      vi: 'Tìm kiếm AI',
+                      ru: 'ИИ-поиск',
+                      'uz-Latn': 'AI Qidiruv',
+                      'uz-Cyrl': 'AI Қидирув',
+                      'zh-Hans': 'AI 释义搜索',
+                      'zh-Hant': 'AI 釋義搜尋',
+                    } as Record<LanguageCode, string>)[studentLanguage] || 'AI Search'}
+              </span>
             </button>
           </form>
 
@@ -263,7 +294,18 @@ export const NotebookModal: React.FC<NotebookModalProps> = ({
             <div className="p-4 bg-amber-50/80 border border-amber-300 rounded-2xl space-y-2.5 animate-fadeIn">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <span className="text-[11px] font-bold text-amber-800 uppercase">AI 검색 결과</span>
+                  <span className="text-[11px] font-bold text-amber-800 uppercase">
+                    {({
+                      ko: 'AI 검색 결과',
+                      en: 'AI Search Result',
+                      vi: 'Kết quả tìm kiếm AI',
+                      ru: 'Результат ИИ-поиска',
+                      'uz-Latn': 'AI Qidiruv natijasi',
+                      'uz-Cyrl': 'AI Қидирув натижаси',
+                      'zh-Hans': 'AI 搜索结果',
+                      'zh-Hant': 'AI 搜尋結果',
+                    } as Record<LanguageCode, string>)[studentLanguage] || 'AI Search Result'}
+                  </span>
                   <h4 className="text-lg font-black text-slate-900">{lookupResult.koreanText}</h4>
                   {lookupResult.pronunciation && (
                     <p className="text-xs font-mono text-amber-700">[{lookupResult.pronunciation}]</p>

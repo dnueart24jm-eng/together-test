@@ -458,40 +458,7 @@ export const MenuHowDoISayIt: React.FC<MenuHowDoISayItProps> = ({
               )}
             </div>
 
-            {/* Speaking Card: Polite for Teacher & Presentation */}
-            {speechData.koreanSentencePolite && (
-              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-bold text-slate-700">
-                    {text.teacherCardTitle}
-                  </span>
-                  <div className="flex items-center gap-1.5">
-                    <button
-                      type="button"
-                      onClick={() => handleSpeak(speechData.koreanSentencePolite)}
-                      className="flex items-center gap-1 px-2.5 py-1 text-xs font-semibold bg-white text-slate-700 hover:bg-slate-100 rounded-lg border border-slate-200 shadow-2xs"
-                      title="소리 듣기"
-                    >
-                      <Volume2 className="w-3.5 h-3.5 text-slate-600" />
-                      <span>{text.audioListenLabel}</span>
-                    </button>
-                    {classCode && studentId && (
-                      <button
-                        type="button"
-                        onClick={() => handleSaveSentence(speechData.koreanSentencePolite, 'expression')}
-                        className="p-1.5 bg-white text-slate-600 hover:text-amber-600 rounded-lg border border-slate-200"
-                        title="노트에 저장"
-                      >
-                        <Bookmark className="w-3.5 h-3.5" />
-                      </button>
-                    )}
-                  </div>
-                </div>
-                <p className="text-sm sm:text-base font-semibold text-slate-800">
-                  "{speechData.koreanSentencePolite}"
-                </p>
-              </div>
-            )}
+            {/* Polite card removed per user request */}
 
             {/* Key vocabulary words used */}
             {speechData.keyWordsUsed && speechData.keyWordsUsed.length > 0 && (
