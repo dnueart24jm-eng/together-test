@@ -89,9 +89,12 @@ export default function App() {
   );
 
   // Student language and Korean level settings
-  // Default test language is English ('en') as requested, switchable anytime
-  const [studentLanguage, setStudentLanguage] = useState<LanguageCode>('en');
-  const [koreanLevel, setKoreanLevel] = useState<KoreanLevel>('beginner');
+  const [studentLanguage, setStudentLanguage] = useState<LanguageCode>(
+    studentSession.language || 'en'
+  );
+  const [koreanLevel, setKoreanLevel] = useState<KoreanLevel>(
+    studentSession.koreanLevel || 'beginner'
+  );
 
   // Modals
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);

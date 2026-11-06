@@ -324,7 +324,16 @@ export const NotebookModal: React.FC<NotebookModalProps> = ({
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 }`}
               >
-                전체 ({items.length})
+                {({
+                  ko: '전체',
+                  en: 'All',
+                  vi: 'Tất cả',
+                  ru: 'Все',
+                  'uz-Latn': 'Barchasi',
+                  'uz-Cyrl': 'Барчаси',
+                  'zh-Hans': '全部',
+                  'zh-Hant': '全部',
+                } as Record<LanguageCode, string>)[studentLanguage] || 'All'} ({items.length})
               </button>
 
               {folders.map((folder) => (
@@ -361,7 +370,31 @@ export const NotebookModal: React.FC<NotebookModalProps> = ({
                       title="더블클릭하여 폴더 이름 변경"
                     >
                       <Folder className="w-3.5 h-3.5" />
-                      <span>{folder.name}</span>
+                      <span>
+                        {folder.name === '새로 배운 단어'
+                          ? ({
+                              ko: '새로 배운 단어',
+                              en: 'New Words',
+                              vi: 'Từ vựng mới',
+                              ru: 'Новые слова',
+                              'uz-Latn': 'Yangi so‘zlar',
+                              'uz-Cyrl': 'Янги сўзлар',
+                              'zh-Hans': '新学单词',
+                              'zh-Hant': '新學單字',
+                            } as Record<LanguageCode, string>)[studentLanguage] || 'New Words'
+                          : folder.name === '유용한 한국 문장'
+                          ? ({
+                              ko: '유용한 한국 문장',
+                              en: 'Useful Korean Sentences',
+                              vi: 'Câu tiếng Hàn hữu ích',
+                              ru: 'Полезные фразы',
+                              'uz-Latn': 'Foydali gaplar',
+                              'uz-Cyrl': 'Фойдали гаплар',
+                              'zh-Hans': '实用韩语句子',
+                              'zh-Hant': '實用韓語句子',
+                            } as Record<LanguageCode, string>)[studentLanguage] || 'Useful Korean Sentences'
+                          : folder.name}
+                      </span>
                     </button>
                   )}
                 </div>
