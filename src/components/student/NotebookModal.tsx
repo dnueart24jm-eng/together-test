@@ -23,6 +23,7 @@ import {
   lookupNotebookExpression,
   speakKoreanText,
 } from '../../services/apiService';
+import { romanizeKorean, isMostlyKorean } from '../../utils/romanize';
 
 interface NotebookModalProps {
   isOpen: boolean;
@@ -307,9 +308,14 @@ export const NotebookModal: React.FC<NotebookModalProps> = ({
                     } as Record<LanguageCode, string>)[studentLanguage] || 'AI Search Result'}
                   </span>
                   <h4 className="text-lg font-black text-slate-900">{lookupResult.koreanText}</h4>
-                  {lookupResult.pronunciation && (
-                    <p className="text-xs font-mono text-amber-700">[{lookupResult.pronunciation}]</p>
-                  )}
+                  {(() => {
+                    const pron =
+                      lookupResult.pronunciation && !isMostlyKorean(lookupResult.pronunciation)
+                        ? lookupResult.pronunciation
+                        : romanizeKorean(lookupResult.koreanText);
+                    if (!pron) return null;
+                    return <p className="text-xs font-mono text-amber-800 font-semibold">[{pron}]</p>;
+                  })()}
                 </div>
                 <div className="flex items-center gap-1.5">
                   <button
@@ -587,9 +593,14 @@ export const NotebookModal: React.FC<NotebookModalProps> = ({
                         </div>
 
                         <p className="text-sm sm:text-base font-bold text-slate-900">{item.koreanText}</p>
-                        {item.pronunciation && (
-                          <p className="text-xs text-amber-700 font-medium">[{item.pronunciation}]</p>
-                        )}
+                        {(() => {
+                          const pron =
+                            item.pronunciation && !isMostlyKorean(item.pronunciation)
+                              ? item.pronunciation
+                              : romanizeKorean(item.koreanText);
+                          if (!pron) return null;
+                          return <p className="text-xs text-amber-800 font-mono font-semibold">[{pron}]</p>;
+                        })()}
                         <p className="text-xs text-slate-600 mt-0.5">{item.nativeText}</p>
                         {item.exampleSentence && (
                           <p className="text-[11px] text-slate-500 mt-1 italic">예: {item.exampleSentence}</p>

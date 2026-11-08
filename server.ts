@@ -972,6 +972,9 @@ app.post('/api/gemini/notebook-lookup', async (req: Request, res: Response): Pro
   );
 
   if (parsed?.koreanText && parsed?.nativeText) {
+    if (!parsed.pronunciation || isMostlyKorean(parsed.pronunciation)) {
+      parsed.pronunciation = romanizeKorean(parsed.koreanText);
+    }
     res.json(parsed);
     return;
   }
@@ -980,6 +983,7 @@ app.post('/api/gemini/notebook-lookup', async (req: Request, res: Response): Pro
   const q = query.trim();
   const isKorean = /[가-힣]/.test(q);
   const translated = await translateTextFree(q, isKorean ? studentLanguage : 'ko');
+  const targetKorean = isKorean ? q : (translated || q);
   const fallbackExplanations: Record<string, string> = {
     en: `Elementary-friendly Korean expression for "${q}". Practice saying it aloud with your classmates!`,
     vi: `Biểu hiện tiếng Hàn dễ hiểu cho "${q}". Hãy luyện đọc to cùng các bạn nhé!`,
@@ -996,7 +1000,7 @@ app.post('/api/gemini/notebook-lookup', async (req: Request, res: Response): Pro
     nativeText: isKorean ? (translated || `${q} (${studentLanguage})`) : q,
     explanation: fallbackExplanations[studentLanguage] || fallbackExplanations.en,
     exampleSentence: isKorean ? `오늘 수업에서 "${q}"을(를) 배웠어요.` : `친구에게 "${translated || q}"라고 말해요.`,
-    pronunciation: isKorean ? 'han-gu-geo pyo-hyeon' : (translated || q),
+    pronunciation: romanizeKorean(targetKorean),
   });
 });
 
@@ -1059,6 +1063,11 @@ JSON 형식:
       );
 
       if (parsed?.translatedText) {
+        if (direction === 'native_to_korean') {
+          if (!parsed.pronunciation || isMostlyKorean(parsed.pronunciation)) {
+            parsed.pronunciation = romanizeKorean(parsed.translatedText);
+          }
+        }
         res.json(parsed);
         return;
       }
@@ -1073,7 +1082,7 @@ JSON 형식:
     const finalKo = koTranslated || `${text}라고 생각해요.`;
     res.json({
       translatedText: finalKo,
-      pronunciation: finalKo,
+      pronunciation: romanizeKorean(finalKo),
       detectedMeaning: text,
     });
   } else {
@@ -1167,6 +1176,15 @@ app.post('/api/gemini/explain-current', async (req: Request, res: Response): Pro
       );
 
       if (parsed?.easyKorean && parsed?.nativeExplanation) {
+        if (Array.isArray(parsed.keyVocabulary)) {
+          parsed.keyVocabulary = parsed.keyVocabulary.map((v: any) => ({
+            ...v,
+            pronunciation:
+              v.pronunciation && !isMostlyKorean(v.pronunciation)
+                ? v.pronunciation
+                : romanizeKorean(v.korean),
+          }));
+        }
         res.json(parsed);
         return;
       }
@@ -1551,7 +1569,7 @@ async function getIntelligentCurrentExplanation(stage: any, lang: string, level:
       return {
         korean: w,
         native: translated || w,
-        pronunciation: w,
+        pronunciation: romanizeKorean(w),
         meaning: '',
       };
     })

@@ -20,6 +20,7 @@ import { UI_STRINGS } from '../../utils/i18n';
 import { fetchCurrentExplanation, speakKoreanText, saveNotebookItem } from '../../services/apiService';
 import { getLocalizedLessonInfo, getLocalizedStage } from '../../utils/lessonLocalization';
 import { Bookmark, Check } from 'lucide-react';
+import { romanizeKorean, isMostlyKorean } from '../../utils/romanize';
 
 interface MenuWhatAreWeDoingProps {
   lessonInfo: LessonInfo;
@@ -439,11 +440,18 @@ export const MenuWhatAreWeDoing: React.FC<MenuWhatAreWeDoingProps> = ({
                       )}
                     </div>
                   </div>
-                  {vocab.pronunciation && (
-                    <span className="text-[11px] font-mono text-amber-700 mb-0.5">
-                      [{vocab.pronunciation}]
-                    </span>
-                  )}
+                  {(() => {
+                    const pron =
+                      vocab.pronunciation && !isMostlyKorean(vocab.pronunciation)
+                        ? vocab.pronunciation
+                        : romanizeKorean(vocab.korean);
+                    if (!pron) return null;
+                    return (
+                      <span className="text-[11px] font-mono text-amber-800 font-semibold mb-0.5">
+                        [{pron}]
+                      </span>
+                    );
+                  })()}
                   {vocab.native && (
                     <span className="text-xs font-medium text-slate-700">
                       {vocab.native}

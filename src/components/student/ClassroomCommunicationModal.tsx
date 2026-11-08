@@ -26,6 +26,7 @@ import {
   createSpeechRecognizer,
   isSpeechRecognitionSupported,
 } from '../../utils/speechUtils';
+import { romanizeKorean, isMostlyKorean } from '../../utils/romanize';
 
 interface ClassroomCommunicationModalProps {
   isOpen: boolean;
@@ -370,11 +371,18 @@ export const ClassroomCommunicationModal: React.FC<ClassroomCommunicationModalPr
           <p className="text-4xl sm:text-6xl font-black leading-tight tracking-wide drop-shadow-sm">
             "{result.translatedText}"
           </p>
-          {result.pronunciation && (
-            <p className="text-xl sm:text-2xl font-medium text-amber-100">
-              [{result.pronunciation}]
-            </p>
-          )}
+          {(() => {
+            const pron =
+              result.pronunciation && !isMostlyKorean(result.pronunciation)
+                ? result.pronunciation
+                : (mode === 'speak' ? romanizeKorean(result.translatedText) : '');
+            if (!pron) return null;
+            return (
+              <p className="text-xl sm:text-2xl font-mono font-medium text-amber-100">
+                [{pron}]
+              </p>
+            );
+          })()}
         </div>
 
         <div className="flex items-center justify-center gap-3">
@@ -606,11 +614,18 @@ export const ClassroomCommunicationModal: React.FC<ClassroomCommunicationModalPr
                     <p className="text-base sm:text-lg font-bold text-slate-900 leading-snug">
                       "{result.translatedText}"
                     </p>
-                    {result.pronunciation && (
-                      <p className="text-xs text-sky-700 font-medium mt-1">
-                        [{result.pronunciation}]
-                      </p>
-                    )}
+                    {(() => {
+                      const pron =
+                        result.pronunciation && !isMostlyKorean(result.pronunciation)
+                          ? result.pronunciation
+                          : (mode === 'speak' ? romanizeKorean(result.translatedText) : '');
+                      if (!pron) return null;
+                      return (
+                        <p className="text-xs text-sky-700 font-mono font-semibold mt-1">
+                          [{pron}]
+                        </p>
+                      );
+                    })()}
                   </div>
 
                   {mode === 'speak' && (
