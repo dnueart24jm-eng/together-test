@@ -23,6 +23,7 @@ import {
 import { UI_STRINGS } from '../../utils/i18n';
 import { fetchSpeechBridge, speakKoreanText, saveNotebookItem } from '../../services/apiService';
 import { getLocalizedStage } from '../../utils/lessonLocalization';
+import { romanizeKorean, isMostlyKorean } from '../../utils/romanize';
 
 interface MenuHowDoISayItProps {
   lessonInfo: LessonInfo;
@@ -445,11 +446,18 @@ export const MenuHowDoISayIt: React.FC<MenuHowDoISayItProps> = ({
               <p className="text-base sm:text-lg font-bold text-slate-900 mb-1">
                 "{speechData.koreanSentenceEasy}"
               </p>
-              {speechData.pronunciationGuide && (
-                <p className="text-xs font-mono text-amber-800">
-                  [{speechData.pronunciationGuide}]
-                </p>
-              )}
+              {(() => {
+                const guide =
+                  speechData.pronunciationGuide && !isMostlyKorean(speechData.pronunciationGuide)
+                    ? speechData.pronunciationGuide
+                    : romanizeKorean(speechData.koreanSentenceEasy);
+                if (!guide) return null;
+                return (
+                  <p className="text-xs font-mono text-amber-800 font-semibold tracking-wide">
+                    [{guide}]
+                  </p>
+                );
+              })()}
               {speechData.pronunciationTip && (
                 <div className="mt-2 pt-2 border-t border-amber-200/50 text-[11px] text-amber-900 font-medium flex items-center gap-1.5">
                   <span className="font-bold text-amber-700">발음 꿀팁:</span>
